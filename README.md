@@ -10,7 +10,7 @@ The following libraries, dependencies and hardware are required in order to buil
 2.	paddlepaddle >=3.0.0 (For GPU use, paddlepaddle-gpu v3.1.0 is already annexed on the .tar file)
 3.	fastapi (when running on a container)
 5.  A computer with the latest NVIDIA drivers and the required CUDA toolkit version (only when using paddlepaddle-gpu, a toolkit of CUDA 12.9 is recommended)
-6.  If a GPU with the sm_120 architecture (50 series) is available, the included .tar file is made for allowing the projecto to run in this architecture only
+6.  If a GPU with the sm_120 architecture (50 series) is available, the included .tar file is made for allowing the project to run in this architecture only
 
 Although paddlepaddle as of the time of writing has released version 3.2.0, no tests have been made using this version, so it is not 
 recommended to use on the project as it may result in unexpected behaviour.
@@ -21,8 +21,7 @@ For test and running using Jupyter notebooks, it is only necessary to run the ad
 For test in containers using Docker, it's necessary to build it using the dockerfile "ocr_api_docker.dockerfile" with the following command:
 ```docker build --no-cache -t ocr_api_docker -f ocr_api_docker.dockerfile .```
 As for running on local, the command used is: ```docker run -d -p 8000:8000 ocr_api_docker```
-Running on a container while on a Container Instance requires the use of a different command since credentials are managed using 
-a Managed Identity, removing the need to copy them manually : ```docker run -d -p 8000:8000 ocr_api_docker```
+Note that the project will use your CPU for the OCR and inference tasks, so it may take longer to finish compared to GPU variants.
 ## GPU variants on Windows:
 For building the container image on a local enviroment, it is necessary to build the project using the dockerfile "ocr_api_docker_gpu50.dockerfile" if a GPU using 
 the sm_120 architecture (50 series) is available, if the available GPU is from an earlier architecture (40 series or below), "ocr_api_docker_gpu.dockerfile" should be used to build.
