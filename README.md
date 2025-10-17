@@ -45,4 +45,4 @@ Build the container using: ```docker build --no-cache -t ocr_api_docker -f {DOCK
 Run the container with GPU access: ```docker run -it --gpus all -p 8000:8000 ocr_api_docker```
 
 # Licence
-This project is distributed under the MIT License. See the ```LICENCE``` file for more details
+This project is distributed under the GNU Affero General Public License. See the ```LICENCE``` file for more details
