@@ -1,29 +1,48 @@
-# Introduction 
-This project allows for the adquisition of structured data as a .json file of the contents of both types of INE ID: "G" and "E"
-by using PaddleOCR to obtain the data and heuristics to order, organize and fill it. Although it is meant to be run as a service
-through a REST API, Jupyter files of the project are also included to test and update without the need of additional hardware.
+# Introduction
+
+This project extracts structured data from both types of Mexican INE identification cards ("G" and "E") and outputs it as a .json file. It uses PaddleOCR to perform text recognition, combined with heuristics to organize, validate, and fill in the extracted fields.
+While the project is designed to run as a REST API service, Jupyter notebooks are also included to allow testing and experimentation without additional infrastructure.
 
 # Getting Started
-As stated above, this project relies on PaddleOCR and it's dependencies, as such, PaddlePaddle and PaddleOCR installation might be needed.
-The following libraries, dependencies and hardware are required in order to build and run this project:
-1.  Docker CLI and DockerDesktop v4.47.0 or above
-2.	paddlepaddle >=3.0.0 (For GPU use, paddlepaddle-gpu v3.1.0 is already annexed on the .tar file)
-3.	fastapi (when running on a container)
-5.  A computer with the latest NVIDIA drivers and the required CUDA toolkit version (only when using paddlepaddle-gpu, a toolkit of CUDA 12.9 is recommended)
-6.  If a GPU with the sm_120 architecture (50 series) is available, the included .tar file is made for allowing the project to run in this architecture only
 
-Although paddlepaddle as of the time of writing has released version 3.2.0, no tests have been made using this version, so it is not 
-recommended to use on the project as it may result in unexpected behaviour.
+As mentioned above, this project depends on PaddleOCR and its core framework PaddlePaddle. Please ensure these libraries and other dependencies are correctly installed before building or running the project.
+Requirements
+1. Docker CLI and Docker Desktop v4.47.0 or higher
+2. paddlepaddle >= 3.0.0
+    - For GPU acceleration: paddlepaddle-gpu==3.1.0
+3. fastapi (required when running the service in a container)
+4. A computer with the latest NVIDIA drivers and the required CUDA toolkit version
+    - CUDA 12.9 is recommended for GPU-based builds.
+5. If using a GPU with the sm_120 architecture (50 series), use the included .tar image for paddlepaddle which is optimized for this architecture.
+
+### Although paddlepaddle as of the time of writing has released version 3.2.0, no tests have been made using this version, so it is not recommended to use on the project as it may result in unexpected behavior.
+
+# Model Requirement
+
+To enable the INE classification process, you must train a YOLOv11-cls model with labeled images of both INE types ("G" and "E"). It is recommended to use at least 5000 images per class for optimal results. Once trained, place the resulting model file (`best.pt`) in the root directory of the project before running or building the service.
 
 # Build and Test
-## MacOS and Non-GPU variants:
-For test and running using Jupyter notebooks, it is only necessary to run the added .ipynb file. 
-For test in containers using Docker, it's necessary to build it using the dockerfile "ocr_api_docker.dockerfile" with the following command:
-```docker build --no-cache -t ocr_api_docker -f ocr_api_docker.dockerfile .```
-As for running on local, the command used is: ```docker run -d -p 8000:8000 ocr_api_docker```
-Note that the project will use your CPU for the OCR and inference tasks, so it may take longer to finish compared to GPU variants.
-## GPU variants on Windows:
-For building the container image on a local enviroment, it is necessary to build the project using the dockerfile "ocr_api_docker_gpu50.dockerfile" if a GPU using 
-the sm_120 architecture (50 series) is available, if the available GPU is from an earlier architecture (40 series or below), "ocr_api_docker_gpu.dockerfile" should be used to build.
-For building, use following command: ```docker build --no-cache -t ocr_api_docker -f {DOCKERFILE} .```.
-As for running on local, the command needed is:  ```docker run -it --gpus all -p 8000:8000 {DOCKERFILE}```.
+
+## MacOS and Non-GPU builds:
+
+For test and running using Jupyter notebooks, it is only necessary to run the provided .ipynb file. 
+To run inside a container, build the image using the following command: ```docker build --no-cache -t ocr_api_docker -f ocr_api_docker.dockerfile .``` 
+
+Then start the container: ```docker run -d -p 8000:8000 ocr_api_docker```
+
+### Note:
+
+On CPU-only systems, OCR and inference tasks will run significantly slower than on GPU-enabled builds.
+
+## GPU builds on Windows:
+
+If you are building locally with GPU support, choose the appropriate Dockerfile based on your GPU architecture:
+  - For sm_120 (50 Series) GPUs: use ```ocr_api_docker_gpu50.dockerfile```
+  - For older GPUs (40 series or earlier): use ```ocr_api_docker_gpu.dockerfile```
+
+Build the container using: ```docker build --no-cache -t ocr_api_docker -f {DOCKERFILE} .```
+
+Run the container with GPU access: ```docker run -it --gpus all -p 8000:8000 ocr_api_docker```
+
+# Licence
+This project is distributed under the MIT License. See the ```LICENCE``` file for more details
